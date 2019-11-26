@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font: 11px sans-serif;
+  margin: 0;
+	font-family: "nyt-cheltenham", georgia, "times new roman", times, serif;
+}
+
+path.line {
+  fill: none;
+  stroke: #666;
+  stroke-width: 1.5px;
+}
+
+path.area {
+  fill: #e7e7e7;
+}
+
+svg {
+    overflow: visible;
+}
+
+.axis {
+  shape-rendering: crispEdges;
+}
+
+.x.axis line {
+  stroke: #fff;
+}
+
+.x.axis .minor {
+  stroke-opacity: .5;
+}
+
+.x.axis path {
+  display: none;
+}
+
+.y.axis line, .y.axis path {
+  fill: none;
+  stroke: #fff;
+}
+	
+.annotation-line { 
+	fill: none;
+	stroke: #000;
+}
+
+.header {
+	display: grid;
+	justify-content: center;
+	padding-left: 80px;
+    padding-right: 80px;
+	width: 800px;
+}
+
+.h1 { 
+	margin-top: 0;
+}
+	
+.title {
+	justify-self: center;
+	font-size: 20px;
+	margin-bottom: 0px;
+}
+
+.subtitle {
+	justify-self: center;
+	font-size: 12px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	padding-left: 2px;
+	color: grey;
+}
+
+.authors {
+	font-size: 10px;
+	justify-self: left;
+	align-self: flex-end;
+	margin-bottom: 2px;
+	padding-left: 5px;
+}
+	
+.title-authors { 
+	display:grid;
+	justify-content: center;
+}
+
+.timetick_hidden {
+    display: none;
+}
+
+.animate_buttons_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.animate_button {
+    margin: 5px;
+    width: 40px;
+    height: 40px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    filter: opacity(100%);
+}
+
+.animate_button:focus {
+    outline: none;
+}
+
+image.curtain {
+    cursor: pointer;
+}
+
+.tooltip_div {
+    position: relative;
+    text-align: center;
+    width: max-content;
+    min-height: 46px;
+    line-height: 14px;
+    font-size: 11px;
+    background: white;
+    pointer-events: none;
+    border-radius: .4em;
+    overflow: visible;
+    margin-left: 8px;
+    border: 1px solid black;
+}
+
+.tooltip_div:after {
+    content: '';
+    position: absolute;
+    border: 7px solid transparent;
+    border-right-color: black;
+    border-left: 0;
+    width: 0;
+    height: 0;
+    top: 50%;
+    left: 0;
+    margin-top: 3px;
+    margin-left: -7px;
+    overflow: visible;
+}
+
+.tooltip_table {
+    border-collapse: collapse;
+    text-align: left;
+    margin-left: 5px;
+}
+
+.tooltip_table td {
+    padding-right: 10px;
+}
+
+.tooltip_medal {
+    width: 15px;
+    height: 15px;
+    min-width: 15px;
+    border-radius: 50%;
+    color: #000;
+    text-align: center;
+    background: #FFF;
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 8pt;
+    font-weight: bold;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+.gold_medal {
+    background: #FFD700;
+}
+
+.silver_medal {
+    background: #C0C0C0;
+}
+
+.bronze_medal {
+    background: #CD7F32;
+}
+	
+.ticks {
+	font-size: 10px;
+}
+	
+.ticks text {
+	color: #fff;
+}
+	
+.ticks line { 
+	stroke: #aaa;
+}
+	
+.missing { 
+	fill: #aaa;
+}
+
+.track,
+.track-inset,
+.track-overlay {
+	stroke-linecap: round;
+}
+
+.track {
+	stroke: #000;
+	stroke-opacity: 0.3;
+	stroke-width: 7px;
+}
+
+.track-inset {
+	stroke: #dcdcdc;
+	stroke-width: 5px;
+}
+
+.track-overlay {
+	pointer-events: stroke;
+	stroke-width: 20px;
+	stroke: transparent;
+	cursor: crosshair;
+}
+
+.handle {
+	fill: #fff;
+	stroke: #000;
+	stroke-opacity: 0.5;
+	stroke-width: 1.25px;
+
+}
+
+.header.row {
+    display: grid;
+		grid-template-columns: 1fr 2fr;
+		height: 50px;
+}
+	
+.animate_buttons_container { 
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	height: 50px;
+	justify-items: center;
+	padding-left: 90px;
+	padding-right: 90px;
+}
+	
+.start_pause_button {
+	display: grid;
+	justify-self: right;
+}
+
+.buttons {
+    padding-top: 10px;
+    padding-bottom: 10px;
+		display: grid; 
+		grid-template-columns: 1fr 1fr;
+}
+	
+.gender { 
+	display: grid;
+	grid-template-columns: 1fr;
+}
+	
+.race { 
+	display: grid;
+	grid-template-columns: 1fr;
+}
+	
+.switch-field {
+    display: flex;
+    margin-bottom: 36px;
+    overflow: hidden;
+}
+
+.switch-field input {
+    position: absolute !important;
+    clip: rect(0, 0, 0, 0);
+    height: 1px;
+    width: 1px;
+    border: 0;
+    overflow: hidden;
+}
+
+.switch-field label {
+    background-color: #e4e4e4;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 11px;
+    line-height: 1;
+    text-align: center;
+    padding: 8px 16px;
+    margin-right: -1px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+    transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+    cursor: pointer;
+}
+
+.switch-field input:checked + label {
+    background-color: #ffce01;
+    box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+    border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+    border-radius: 0 4px 4px 0;
+}
+	
+.writeup {
+	display: grid;
+	justify-self: center;
+	font-size: 11px;
+	padding-left: 100px;
+	margin-top: -70px;
+}
+
+
+</style>
+<body>
+	<div class='header'>
+		<div class='title-authors'>
+			<h1 class='title'>Sprint For Gold: How fast do you have to run to win Olympic gold? </h1>
+		</div>
+		<p class='subtitle'>Explore the fastest athletes' times over the past 28 summer Olympic Games. A visualization by Angie Boggust and Brandon Carter.</p>
+	</div>
+    <div class="header row">
+        <div class="animate_buttons_container">
+            <input type="image" class="animate_button play_button" src="images/play.png" id="start_pause_button" alt="Start/Pause Race" />
+            <input type="image" class="animate_button" src="images/replay.png" id="reset_button" alt="Restart Race" />
+        </div>
+        <div class="buttons">
+            <div class='gender'>
+								<form class='form'>
+									<div class="switch-field">
+										<input type="radio" class="data_option" id='gender-men' name="gender" value="men" checked />
+										<label for='gender-men'>Men</label>
+										<input type="radio" class="data_option" id='gender-women' name="gender" value="women" />
+										<label for='gender-women'>Women</label>
+									</div>
+								</form>
+            </div>
+            <div class='race'>
+                <form class='form'>
+									<div class="switch-field">
+                    <input type="radio" class="data_option" id='race-100' name="race" value="100m" checked />
+										<label for='race-100'>100m</label>
+                    <input type="radio" class="data_option" id='race-200' name="race" value="200m" />
+										<label for='race-200'>200m</label>
+                    <input type="radio" class="data_option" id='race-400' name="race" value="400m">
+										<label for='race-400'>400m</label>
+                	</div>
+								</form>
+            </div>
+        </div>
+    </div>
+<svg></svg>
+
+<script src="https://d3js.org/d3.v3.min.js"></script>
+<script>
+	
+	
+ 
+var margin = {top: 15, right: 80, bottom: 80, left: 80},
+    width = 960 - margin.left - margin.right,
+    height = 700 - margin.top - margin.bottom,
+		control_height = 25;
+	
+var min_year = 1896;
+var max_year = 2016;
+		
+
+// Scales and axes. Note the inverted domain for the y-scale: bigger is up!
+var x = d3.scale.linear().range([0, width]),
+    y = d3.scale.linear().range([height, control_height]);
+
+// An area generator, for the light fill.
+var area = d3.svg.area()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.distance); })
+    .y0(height)
+    .y1(function(d) { return y(d.year); });
+
+// A line generator, for the dark stroke.
+var line = d3.svg.line()
+    .interpolate("monotone")
+    .x(function(d) { return x(d.distance); })
+    .y(function(d) { return y(d.year); });
+
+var icon_size = 17;
+var is_paused = true;
+var is_mouse_over_play = false;
+var all_data;
+var current_data_file = "data/100m_men.csv";
+var current_filtered_data;
+var current_transition_durations = [];
+var original_transition_durations = [];
+var current_curtains = [];
+
+d3.csv(current_data_file, type, function(error, data) {
+    all_data = data;
+    initial_setup();
+});
+
+// Add hover effects to animation buttons.
+d3.selectAll('input.animate_button')
+    .on('mouseover', function(d) {
+        var current_image_src = d3.select(this).attr('src');
+        var new_image_src = current_image_src.substr(0, current_image_src.length - 4) + '_hover.png';
+        d3.select(this).attr('src', new_image_src);
+        if (d3.select(this).attr('class').indexOf('play') !== -1) {
+            is_mouse_over_play = true;
+        }
+    }).on('mouseout', function(d) {
+        var current_image_src = d3.select(this).attr('src');
+        if (current_image_src.indexOf('_hover') === -1) {
+            return;
+        }
+        var new_image_src = current_image_src.substr(0, current_image_src.length - 10) + '.png';
+        d3.select(this).attr('src', new_image_src);
+        if (d3.select(this).attr('class').indexOf('play') !== -1) {
+            is_mouse_over_play = false;
+        }
+    });
+
+function get_file_from_options() {
+    // Returns data filepath based on current option values.
+    var selected_gender = d3.select('input[name="gender"]:checked').node().value;
+    var selected_race = d3.select('input[name="race"]:checked').node().value;
+    var filepath = 'data/' + selected_race + '_' + selected_gender + '.csv'
+    return filepath;
+}
+
+function reinitialize() {
+    // Reload data from current_data_file global.
+    d3.csv(current_data_file, type, function(error, data) {
+        all_data = data;
+        // Delete the current SVG elements.
+        d3.selectAll('svg > *').remove();
+        // Create new grid using new data.
+        initial_setup();
+    });
+}
+
+function options_changed() {
+    // Pause animation if it is currently going.
+    pause_animation();
+
+    // Called when radio button options are changed.
+    var new_filepath = get_file_from_options();
+    if (new_filepath == current_data_file) {
+        // File didn't change.
+        return;
+    }
+    // Update global with new data file path.
+    current_data_file = new_filepath;
+
+    // Reinitialize with new data (clears SVG too).
+    reinitialize();
+}
+
+function initial_setup() {
+    // Set up the SVG.
+    setup_svg();
+
+    // Filter data to a default filtering.
+    current_filtered_data = default_filter();
+
+    // Show the filtered data on the SVG.
+    setup_lines();
+
+    // Start the animation.
+    //start_animation();
+
+    // Set onclick for radio buttons.
+    d3.selectAll('input.data_option').on('click', function() {
+        options_changed();
+    });
+
+    // Set onclick for animation buttons.
+    d3.select('#start_pause_button').on('click', function() {
+        if (is_paused) {  // Start
+            update_transition_durations();
+            start_animation();
+        }
+        else {  // Pause
+            pause_animation();
+        }
+    });
+    d3.select('#reset_button').on('click', function() {
+        // Make sure play button is shown.
+        d3.select('#start_pause_button').attr('src', 'images/play.png');
+        reset_animation();
+    });
+}
+
+function hide_all_timeticks() {
+    // Add hidden class to time y-axis ticks.
+    var time_ticks = d3.select('.timeaxis').selectAll('.tick text');
+    time_ticks.attr('class', 'timetick_hidden');
+    time_ticks.attr('id', function(d, i) {
+        return 'timetick' + d;
+    });
+}
+	
+function getBB(selection) {
+    selection.each(function(d){d.bbox = this.getBBox();})
+}
+	
+function annotate(svg) {
+	if ((current_data_file == "data/100m_men.csv") || (current_data_file == "data/200m_men.csv") || (current_data_file == "data/400m_men.csv") ) {
+		// World War I
+		var y_distance = y(1916);
+		var x_distance = width/2;
+		var text_width = 100;
+		
+		svg.append("line")
+			.attr("x1", 0)
+			.attr("x2", width)
+			.attr("y1", y_distance + 1)
+			.attr("y2", y_distance + 1)
+			.attr("stroke-width", 0.2)
+			.attr("stroke", '#aaaaaa')
+
+		svg.append('rect')
+			.attr("x", x_distance - text_width/2)
+			.attr("y", y_distance - 8)
+			.attr("width", text_width)
+			.attr("height", 16)
+			.style("fill", "white");
+
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 5)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text('World War I')
+	}
+		
+	if ((current_data_file != "data/200m_women.csv") && (current_data_file != "data/400m_women.csv") ) {
+		// annotate WWII
+		var y_distance = (y(1944) + y(1940))/2;
+		var x_distance = width/2;
+		var text_width = 100;
+
+		svg.append("line")
+			.attr("x1", 0)
+			.attr("x2", width)
+			.attr("y1", y_distance + 1)
+			.attr("y2", y_distance + 1)
+			.attr("stroke-width", 0.2)
+			.attr("stroke", '#aaaaaa')
+
+		svg.append('rect')
+			.attr("x", x_distance - text_width/2)
+			.attr("y", y_distance - 8)
+			.attr("width", text_width)
+			.attr("height", 16)
+			.style("fill", "white");
+
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 5)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text('World War II')
+	}
+	
+	if (current_data_file == "data/200m_men.csv") { 
+		// 200m Men's 
+		var y_distance = y(1900);
+		var x_distance = width/2;
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 20)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text("Men's 200m Race Becomes an Olympic Event")
+		
+		//arrow  
+		svg.append("svg:defs").append("svg:marker")
+			.attr("id", "triangle")
+			.attr("refX", 4)
+			.attr("refY", 4)
+			.attr("markerWidth", 30)
+			.attr("markerHeight", 30)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 8 4 0 8 1 4")
+			.style("fill", "#aaaaaa");
+		
+		//line left             
+		svg.append("line")
+			.attr("x1", x_distance - 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance - 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+
+		//line right             
+		svg.append("line")
+			.attr("x1", x_distance + 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance + 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+	}
+	
+	if ((current_data_file == "data/100m_women.csv") || (current_data_file == "data/200m_women.csv") || (current_data_file == "data/400m_women.csv" )) {
+		// Women can participate
+		var y_distance = y(1900);
+		var x_distance = width/2;
+		var text_width = 300;
+		
+		svg.append("line")
+			.attr("x1", 0)
+			.attr("x2", width)
+			.attr("y1", y_distance + 1)
+			.attr("y2", y_distance + 1)
+			.attr("stroke-width", 0.2)
+			.attr("stroke", '#aaaaaa')
+		
+		svg.append('rect')
+			.attr("x", x_distance - text_width/2)
+			.attr("y", y_distance - 8)
+			.attr("width", text_width)
+			.attr("height", 16)
+			.style("fill", "white");
+		
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 3)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation women-allowed")
+			.attr('fill', '#aaaaaa')
+			.text('Women Are Allowed to Participate in the Olympic Games')
+		
+	}
+	
+	if (current_data_file == "data/100m_women.csv") { 
+		// 100m Women's 
+		var y_distance = y(1928);
+		var x_distance = width/2;
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 20)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text("Women's 100m Race Becomes an Olympic Event")
+		
+		//arrow  
+		svg.append("svg:defs").append("svg:marker")
+			.attr("id", "triangle")
+			.attr("refX", 4)
+			.attr("refY", 4)
+			.attr("markerWidth", 30)
+			.attr("markerHeight", 30)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 8 4 0 8 1 4")
+			.style("fill", "#aaaaaa");
+		
+		//line left             
+		svg.append("line")
+			.attr("x1", x_distance - 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance - 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+
+		//line right             
+		svg.append("line")
+			.attr("x1", x_distance + 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance + 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+	}
+	
+	if (current_data_file == "data/200m_women.csv") { 
+		// 200m Women's 
+		var y_distance = y(1948);
+		var x_distance = width/2;
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 20)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text("Women's 200m Race Becomes an Olympic Event")
+		
+		//arrow  
+		svg.append("svg:defs").append("svg:marker")
+			.attr("id", "triangle")
+			.attr("refX", 4)
+			.attr("refY", 4)
+			.attr("markerWidth", 30)
+			.attr("markerHeight", 30)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 8 4 0 8 1 4")
+			.style("fill", "#aaaaaa");
+		
+		//line left             
+		svg.append("line")
+			.attr("x1", x_distance - 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance - 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+
+		//line right             
+		svg.append("line")
+			.attr("x1", x_distance + 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance + 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+	}
+	
+	if (current_data_file == "data/400m_women.csv") { 
+		// 400m Women's 
+		var y_distance = y(1964);
+		var x_distance = width/2;
+		svg.append("text")
+			.attr("x", x_distance)
+			.attr("y", y_distance + 20)
+			.attr("text-anchor", "middle")
+			.attr("class", "annotation")
+			.attr('fill', '#aaaaaa')
+			.text("Women's 400m Race Becomes an Olympic Event")
+		
+		//arrow  
+		svg.append("svg:defs").append("svg:marker")
+			.attr("id", "triangle")
+			.attr("refX", 4)
+			.attr("refY", 4)
+			.attr("markerWidth", 30)
+			.attr("markerHeight", 30)
+			.attr("orient", "auto")
+			.append("path")
+			.attr("d", "M 0 0 8 4 0 8 1 4")
+			.style("fill", "#aaaaaa");
+		
+		//line left             
+		svg.append("line")
+			.attr("x1", x_distance - 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance - 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+
+		//line right             
+		svg.append("line")
+			.attr("x1", x_distance + 125)
+			.attr("y1", y_distance + 20)
+			.attr("x2", x_distance + 125)
+			.attr("y2", y_distance + 10 )          
+			.attr("stroke-width", 0.5)
+			.attr("stroke", "#aaaaaa")
+			.attr("marker-end", "url(#triangle)");
+	}
+
+}
+	
+function get_times() { 
+	var times = []
+	for (i = 0; i < current_filtered_data.length; i++) {
+			var data = current_filtered_data[i][1];
+			var time = parseFloat(data.Time);
+			times.push(time);
+			}
+	return times;
+	}	
+
+function setup_svg() {
+    // Hardcode min and max year so y-axis looks the same when dataset is switched.
+    var max_year = 2016;  // d3.max(all_data, function(d) { return +d.Year});
+    var min_year = 1896;  // d3.min(all_data, function(d) { return +d.Year});
+    var max_distance = d3.max(all_data, function(d) { return +d.Distance});
+    var min_distance = d3.min(all_data, function(d) { return +d.Distance});
+
+	// Get year and time pairs
+	var year_times = [];
+	for (i = 0; i < all_data.length; i++) {
+		var data = all_data[i];
+		if (data.Time != '0') {
+			var year = parseInt(data.Year);
+			var time = parseFloat(data.Time).toFixed(2);
+			year_times.push([year, time]);
+		}
+	}
+
+	year_times.sort(function(a,b){
+		return a[0] - b[0];
+	})
+
+
+	var years = [];
+	var times = [];
+	for (i = 0; i < year_times.length; i++) {
+		years.push(year_times[i][0]);
+		times.push(year_times[i][1]);
+	}
+	
+	var all_years = [];
+	var missing_years = [];
+	for (i = min_year; i <= max_year; i+=4) {
+		all_years.push(i);
+		if (!years.includes(i)) { 
+			missing_years.push(i)
+		}
+	}
+
+	xAxis = d3.svg.axis().scale(x).tickSize(-height).tickSubdivide(true).tickFormat(function(d,i){
+		return d + 'm';
+	})
+
+	yAxisLeft = d3.svg.axis().scale(y).tickValues(years).tickFormat(d3.format("d")).orient("left").outerTickSize(0)
+		.innerTickSize(0);
+
+	yAxisLeftMissing = d3.svg.axis().scale(y).tickValues(missing_years).tickFormat(d3.format("d")).orient("left").outerTickSize(0).innerTickSize(0);
+
+	yAxisRight = d3.svg.axis().scale(y).tickValues(years).tickFormat(d3.format("d")).orient("right").outerTickSize(0).innerTickSize(0);
+
+	yAxisRight.tickFormat(function(d,i){
+		return times[i] + ' s';
+	})
+
+    // Compute the minimum and maximum distance and year.
+    x.domain([min_distance, max_distance]);
+    y.domain([min_year, max_year]).nice();
+
+    // Add an SVG element with the desired dimensions and margin.
+    var svg = d3.select("svg")
+		.attr("width", width + margin.left + margin.right)
+		.attr("height", height + margin.top + margin.bottom)
+	    .append("g")
+			.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+			.attr("class", "grid_area")
+
+    // Add the clip path.
+    svg.append("clipPath")
+		.attr("id", "clip")
+		.append("rect")
+			.attr("width", width)
+			.attr("height", height);
+
+    // Add the year y-axis.
+    svg.append("g")
+		.attr("class", "y axis")
+		.attr("transform", "translate(" + (-10) + ",0)")
+		.call(yAxisLeft);
+	
+	
+	// Add the year y-axis missing values
+    svg.append("g")
+		.attr("class", "y axis missing")
+		.attr("transform", "translate(" + (-10) + ",0)")
+		.call(yAxisLeftMissing);
+	
+	d3.selectAll('.missing').selectAll('text').classed('missing', true);
+	
+	
+	// Add the time y-axis.
+    svg.append("g")
+		.attr("class", "y axis timeaxis")
+		.attr("transform", "translate(" + (width + 10) + ",0)")
+		.call(yAxisRight);
+
+
+    hide_all_timeticks();
+	
+	
+	 // Add the x-axis.
+    svg.append("g")
+		.attr("class", "x axis")
+		.attr("transform", "translate("+ -3 + "," + (height - 15) + ")")
+		.call(xAxis);
+	
+	annotate(svg);
+}
+
+function year_data_comparator(a, b) {
+    a_year = a[0].year;
+    b_year = b[0].year;
+    if (a_year == b_year) {
+        return 0;
+    }
+    else if (a_year > b_year) {
+        return -1;
+    }
+    else {
+        return 1;
+    }
+}
+
+function default_filter() {
+    // Initial filter.
+	var year_data = [];
+	var seen_years = [];
+	for (i = 0; i < all_data.length; i++) {
+		var year = all_data[i].Year;
+		if (!seen_years.includes(year)) {
+			seen_years.push(year);
+			year_data.push(all_data.filter(function(d) {
+				return d.Year == year;
+			}));
+		}
+	}
+    // Return sorted with year decreasing. Needed for drawing tooltips in the right order.
+    year_data.sort(year_data_comparator);
+    return year_data;
+}
+	
+function get_max_time() { 
+	var max = 0; 
+	for (i = 0; i < current_filtered_data.length; i++) { 
+		var datum = current_filtered_data[i];
+		if (parseFloat(datum[1].Time) > max) { 
+			max = parseFloat(datum[1].Time);
+		}
+	}
+	return max;
+}
+	
+function get_ranges() { 
+	var ranges = [];
+	for (i = 0; i < current_filtered_data.length; i++) { 
+		var datum = current_filtered_data[i];
+		var time = parseFloat(datum[1].Time)
+		var range = d3.scale.linear()
+			.domain([0, time])
+			.range([0, width])
+			.clamp(true);
+		ranges.push(range)
+	} 
+	return ranges
+}
+	
+function parse_year_class(class_list) { 
+	return class_list[2].substr(4, 4)
+}
+	
+function update(h) {	
+  // update position and text of label according to slider scale
+	handle.attr("cx", x(h));
+	label
+		.attr("x", x(h))
+		.text(Number.parseFloat(h).toFixed(1) + ' s');
+	
+	// update the runners
+	var ranges = get_ranges();
+	var runners = d3.selectAll('.runner')[0];
+	var tooltips = d3.selectAll('.tooltip')[0];
+	for (i = 0; i < runners.length; i ++) { 
+		var runner = runners[i]
+		var tooltip = tooltips[i]
+		var runner_prevx = parseFloat(runner.getAttribute('x'));
+		var runner_newx = ranges[i](h);
+		var delta = runner_newx - runner_prevx;
+		var tooltip_prevx = parseFloat(tooltip.getAttribute('x'));
+		runner.setAttribute('x', runner_newx - icon_size/2)
+		tooltip.setAttribute('x', runner_newx + 15)
+	}
+	
+	// update tooltip
+	for (i = 0; i < tooltips.length; i ++) { 
+		var tooltip = tooltips[i];
+		
+	}
+	
+	// update curtain
+	var curtains = d3.selectAll('.curtain-line')[0];
+	for (i = 0; i < curtains.length; i++) { 
+		var curtain = curtains[i]
+		var newx = ranges[i](h)
+		var current_width = curtain.getAttribute('width')
+		var new_width = Math.max(0, 800 - ranges[i](h))
+		curtain.setAttribute('width', new_width)
+		if (new_width == 0) { 
+			var year = parse_year_class(curtain.classList);
+			var year_timetick = d3.select('#timetick' + year);
+			year_timetick.classed('timetick_hidden', false);
+		} else { 
+			var year = parse_year_class(curtain.classList);
+			var year_timetick = d3.select('#timetick' + year);
+			year_timetick.classed('timetick_hidden', true);
+		}
+	}
+	
+}
+	
+	
+function snap_slider(current_time) {
+	var end_times = get_times();
+	var max_delta = get_max_time()/100;
+	for (i = 0; i < end_times.length; i++) {
+		var end_time = end_times[i];
+		var delta = current_time - end_time;
+		
+		if (delta < max_delta && delta > 0) { 
+			return end_time;
+		}
+	}
+	return current_time;
+	
+}
+	
+function create_slider() { 
+	var moving = false;
+	var currentValue = 0;
+	var targetValue = width;
+
+	var playButton = d3.select("#play-button");
+	
+	var startTime = 0; 
+	var endTime = get_max_time();
+
+	x = d3.scale.linear()
+		.domain([startTime, endTime])
+		.range([0, targetValue])
+		.clamp(true);
+
+	var svg = d3.select('.grid_area');
+	var slider = svg.append("g")
+		.attr("class", "slider")
+		.attr("transform", "translate(" + 0 + "," + 0 + ")");
+
+	
+	var max_time = get_max_time();
+	var range = d3.scale.linear()
+		.domain([0, width])
+		.range([0, max_time])
+		.clamp(true);
+	
+	var drag = d3.behavior.drag()																 
+		.on("drag", function() {
+			var currentValue = d3.event.x;
+			var currentTime = range(currentValue);
+			var currentX = snap_slider(currentTime);
+			update(currentX);
+		})
+		.on('dragstart', function(d){
+			d3.event.sourceEvent.stopPropagation();
+		})
+	
+	
+	slider.append("line")
+		.attr("class", "track")
+		.attr("x1", x.range()[0])
+		.attr("x2", x.range()[1])
+		.select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+		.attr("class", "track-inset")
+		.select(function() {return this.parentNode.appendChild(this.cloneNode(true)); })
+		.attr("class", "track-overlay")
+		.call(drag)
+		.on('click', function() {
+			if (!d3.event.defaultPrevented){
+				pause_animation();
+				currentValue = d3.event.x - margin.left;
+				update(x.invert(currentValue))
+			}
+		})
+	
+	
+	var times = [];
+	for (i = 0; i < all_data.length; i++) {
+		var data = all_data[i];
+		if (data.Time != '0') {
+			var time = parseFloat(data.Time);
+			times.push(time);
+		}
+	}
+		
+	slider_axis = d3.svg.axis().scale(x).tickValues(times).orient("bottom").outerTickSize(0)
+		.innerTickSize(-20);
+
+	var slider_axis = slider.insert("g", ".track-overlay")
+		.attr("class", "ticks")
+		.attr("transform", "translate(0," + 10 + ")")
+		.call(slider_axis);
+	slider_axis.selectAll('text').remove();
+
+	handle = slider.insert("circle", ".track-overlay")
+		.attr("class", "handle")
+		.attr('cx', 0)
+		.attr("r", 7);
+
+	label = slider.append("text")  
+		.attr("class", "label")
+		.attr("text-anchor", "middle")
+		.text(Number.parseFloat(startTime).toFixed(1) + ' s')
+		.attr('x', 0)
+		.attr("transform", "translate(0," + (-12) + ")")
+
+	// stope animation on slider nousedown
+	slider.on('mousedown', function() { 
+		pause_animation();
+	});
+	
+}
+	
+
+
+function make_tooltip_html(d) {
+    var html = '<table class="tooltip_table">';
+    var html = html + '<tr><td><div class="tooltip_medal gold_medal">G</div></td><td class="tooltip_name">' + d.Name + ' (' + d.Nationality + ')</td><td class="tooltip_time">' + Number.parseFloat(d.Time).toFixed(2) + ' s</td></tr>';
+    var html = html + '<tr><td><div class="tooltip_medal silver_medal">S</div></td><td class="tooltip_name">' + d.Name_S + ' (' + d.Nationality_S + ')</td><td class="tooltip_time">' + Number.parseFloat(d.Result_S).toFixed(2) + ' s</td></tr>';
+    var html = html + '<tr><td><div class="tooltip_medal bronze_medal">B</div></td><td class="tooltip_name">' + d.Name_B + ' (' + d.Nationality_B + ')</td><td class="tooltip_time">' + Number.parseFloat(d.Result_B).toFixed(2) + ' s</td></tr>';
+    var html = html + '</table>';
+    return html;
+}
+
+function setup_lines() {
+    var svg = d3.select('.grid_area');
+    svg.selectAll('.line')
+        .data(current_filtered_data)
+        .enter()
+        .append('path')
+            .attr('class', 'line')
+            .style('stroke', '#000000')
+            .attr('clip-path', 'url(#clip)')
+            .attr('d', function(d) {
+                return line(d);
+        })
+	
+	// Create slider
+	create_slider()
+	
+	// Create main plot 
+    current_curtains = [];
+    current_transition_durations = [];
+    original_transition_durations = [];
+    for (i = 0; i < current_filtered_data.length; i++) {
+        var d = current_filtered_data[i];
+        var d_year = +d[0].Year;
+        var d_time_ms = +d[1].Time * 1000;
+
+        // Push transition time into array, transition created when the animation starts.
+        current_transition_durations.push(d_time_ms);
+        original_transition_durations.push(d_time_ms);
+
+        // Create curtain.
+        var curtain_y = -(1 + parseFloat(line(d).split(',')[1]));
+		var curtrain_and_runner = svg.append('g')
+			.attr('class', 'curtain year' + d_year);
+		var curtain = curtrain_and_runner.append('rect')
+			.attr('x', -1 * width)
+			.attr('y', curtain_y)
+			.attr('height', 2)
+			.attr('width', width)
+			.attr('transform', 'rotate(180)')
+			.style('fill', '#e4e4e4')
+			.attr('class', 'curtain-line curtain year' + d_year);
+
+		var runner_and_tooltip = curtrain_and_runner.append('g')
+			.attr('class', 'runner_and_tooltip');
+
+		var filename = d[0].Nationality + '.png';
+			
+		var runner = runner_and_tooltip.append('image')
+			.attr('xlink:href', 'images/flags/' + filename)
+			.attr('class', 'runner curtain year' + d_year)
+			.attr('x', -icon_size/2)
+			.attr('y', -curtain_y - icon_size/2)
+			.attr('height', icon_size)
+			.attr('width', icon_size)
+			.on('mouseover', function(d) {
+				var class_year = d3.select(this).attr('class').substr(-4);
+				var year_tooltip_div = d3.select('.tooltip_div.year'+class_year);
+				year_tooltip_div.transition()
+					.duration(150)
+					.style('opacity', 0.9);
+			})
+			.on('mouseout', function(d) {
+				var class_year = d3.select(this).attr('class').substr(-4);
+				var year_tooltip_div = d3.select('.tooltip_div.year'+class_year);
+				year_tooltip_div.transition()
+					.duration(100)
+					.style('opacity', 0);
+			});
+
+        var tooltip_html = make_tooltip_html(d[1]);
+
+        var tooltip = runner_and_tooltip.append('foreignObject')
+            .attr('class', 'tooltip curtain year' + d_year)
+            .attr('id', 'tooltip_fo'+d_year)
+            .attr('x', 15)
+            .attr('y', -curtain_y - 38)
+            .attr('width', 325)
+            .attr('height', 75);
+        var tooltip_div = tooltip.append('xhtml:div')
+            .attr('class', 'tooltip_div tooltip_hidden year' + d_year)
+            .style('opacity', 0)
+            .html(tooltip_html);
+
+        current_curtains.push(curtrain_and_runner);
+    }
+	
+}
+
+function update_transition_durations() {
+    // Updates current_transition_durations, rescaling durations based on current x value of each image.
+    for (i = 0; i < current_curtains.length; i++) {
+        var c = current_curtains[i];
+        var original_duration = original_transition_durations[i];
+        var curtain_year_class = c.attr('class').replace(/ /g,'.');
+        var runner_x = d3.select('image.'+curtain_year_class).attr('x');
+        if (runner_x < 0) {
+            // Move the interval from [-icon_size/2, width] to [0, width+icon_size/2].
+            runner_x = 0;
+        }
+        var scaling_frac = (1 - (runner_x / (icon_size/2 + width)));
+        var new_duration = original_duration * scaling_frac;
+        current_transition_durations[i] = new_duration;
+    }
+}
+
+function update_transition_durations() {
+    // Updates current_transition_durations, rescaling durations based on current x value of each image.
+    for (i = 0; i < current_curtains.length; i++) {
+        var c = current_curtains[i];
+        var original_duration = original_transition_durations[i];
+        var curtain_year_class = c.attr('class').replace(/ /g,'.');
+        var runner_x = d3.select('image.'+curtain_year_class).attr('x');
+        if (runner_x < 0) {
+            // Move the interval from [-icon_size/2, width] to [0, width+icon_size/2].
+            runner_x = 0;
+        }
+        var scaling_frac = (1 - (runner_x / (icon_size/2 + width)));
+        var new_duration = original_duration * scaling_frac;
+        current_transition_durations[i] = new_duration;
+    }
+}
+
+function start_animation() {
+    is_paused = false;
+    // Change play button to pause button.
+    if (is_mouse_over_play) {
+        var image_file = 'images/pause_hover.png';
+    }
+    else {
+        var image_file = 'images/pause.png'
+    }
+    d3.select('#start_pause_button').attr('src', image_file);
+    for (i = 0; i < current_curtains.length; i++) {
+        var c = current_curtains[i];
+        var transition_duration = current_transition_durations[i];
+
+        // Create curtain and runner transitions.
+        var svg = d3.select('.grid_area');
+        var t_curtain = svg.transition()
+                .delay(0)
+        .duration(transition_duration)
+        .ease('linear')
+                .attr('width', 0)
+
+        var curtain_year_class = c.attr('class').replace(/ /g,'.');
+        var t_runner = svg.transition()
+                .delay(0)
+                .duration(transition_duration)
+                .ease('linear')
+                .attr("x", width);
+        t_curtain.select('rect.'+curtain_year_class)
+          .attr('width', 0);
+			
+				t_runner.select('image.'+curtain_year_class)
+          .attr("x", width - icon_size/2)
+          .each('end', function() {
+            var curtain_class = d3.select(this).attr('class');
+            var curtain_class_year = curtain_class.substr(-4);
+            var year_timetick = d3.select('#timetick' + curtain_class_year);
+            year_timetick.classed('timetick_hidden', false);
+          });
+        t_runner.select('.tooltip.'+curtain_year_class)
+          .attr("x", width + 15);
+    }
+		handle.transition()
+			.attr('delay', 0)
+			.duration(transition_duration)
+			.attr('cx', width)
+			.ease('linear');
+	
+		var max_time = get_max_time();
+		var range = d3.scale.linear()
+			.domain([0, width])
+			.range([0, max_time])
+			.clamp(true);
+		
+		label.transition()
+		.attr('delay', 0)
+		.duration(transition_duration)
+		.attr('x', width)
+		.ease('linear')
+		.tween("move", function() { 
+			var self = d3.select(this)
+			return function(t) { 
+					var handle_x = handle.attr('cx');
+					var time = range(handle_x);
+					self.text(Number.parseFloat(time).toFixed(1) + ' s');
+			}
+		})
+}
+
+
+function pause_animation() {
+    is_paused = true;
+    // Change pause button to play button.
+    if (is_mouse_over_play) {
+        var image_file = 'images/play_hover.png';
+    }
+    else {
+        var image_file = 'images/play.png'
+    }
+    d3.select('#start_pause_button').attr('src', image_file);
+    for (i = 0; i < current_curtains.length; i++) {
+        var c = current_curtains[i];
+        var curtain_year_class = c.attr('class').replace(/ /g,'.');
+        d3.select('rect.'+curtain_year_class)
+          .transition()
+          .duration(0);
+        d3.selectAll('image.'+curtain_year_class+',.tooltip.'+curtain_year_class)
+          .transition()
+          .duration(0);
+    }
+	handle.transition()
+		.duration(0)
+	label.transition()
+		.duration(0)
+}
+
+function clear_lines() {
+    // Clear global arrays.
+    current_curtains = [];
+    current_transition_durations = [];
+    original_transition_durations = [];
+    // Remove grid elements.
+    var svg = d3.select('.grid_area');
+    svg.selectAll('.line').data([]).exit().remove();
+    svg.selectAll('.curtain').remove();
+}
+	
+function reset_slider() { 
+	d3.selectAll('.slider > *').remove();
+	create_slider();
+}
+
+function reset_animation() {
+    // Pause so that the times don't appear on the right.
+    pause_animation();
+    // Clear the existing arrays.
+    clear_lines();
+    // Restore the current filtered data.
+    setup_lines();
+	// Reset slider
+	reset_slider();
+    // Hide timeticks.
+    hide_all_timeticks();
+}
+
+function type(d) {
+    d.year = +d.Year;
+    d.distance = +d.Distance;
+    d.time = +d.Time;
+    return d;
+}
+
+</script>
